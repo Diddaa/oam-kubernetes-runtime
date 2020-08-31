@@ -29,7 +29,7 @@ func init() {
 }
 
 func main() {
-	var metricsAddr, logFilePath string
+	var metricsAddr, logFilePath, leaderElectionNamespace string
 	var enableLeaderElection, logCompress bool
 	var logRetainDate int
 	var certDir string
@@ -41,6 +41,7 @@ func main() {
 	flag.StringVar(&certDir, "webhook-cert-dir", "/k8s-webhook-server/serving-certs", "Admission webhook cert/key dir.")
 	flag.IntVar(&webhookPort, "webhook-port", 9443, "admission webhook listen address")
 	flag.StringVar(&metricsAddr, "metrics-addr", ":8080", "The address the metric endpoint binds to.")
+	flag.StringVar(&leaderElectionNamespace, "leader-election-namespace", "default", "The namespace lock resource create or update.")
 	flag.BoolVar(&enableLeaderElection, "enable-leader-election", false,
 		"Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager.")
 	flag.StringVar(&logFilePath, "log-file-path", "", "The address the metric endpoint binds to.")
@@ -73,6 +74,7 @@ func main() {
 		MetricsBindAddress: metricsAddr,
 		LeaderElection:     enableLeaderElection,
 		LeaderElectionID:   "oam-kubernetes-runtime",
+		LeaderElectionNamespace: leaderElectionNamespace,
 		Port:               webhookPort,
 		CertDir:            certDir,
 	})
